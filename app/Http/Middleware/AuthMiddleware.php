@@ -15,17 +15,23 @@ class AuthMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle($request, Closure $next)
     {
-        $token = $request->query('token');
-        $user = LoginToken::where('token', $token)->first();
+        $token = $request->query('token') ?? $request->header('Authorization');
         if (!$token) {
             return response()->json([
-                'message' => 'unauthorized'
+                'message' => 'Unauthorized: Token not provided'
             ], 401);
         }
 
-        $request->merge(['authenticated_user' => $user->user]);
+        $loginToken = LoginToken::where('token', $token)->first();
+        if (!$loginToken) {
+            return response()->json([
+                'message' => 'unauthorized user'
+            ], 401);
+        }
+
+        $request->merge(['authenticated_user' => $loginToken->user]);
         return $next($request);
     }
 }

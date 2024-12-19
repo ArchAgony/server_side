@@ -31,6 +31,7 @@ Route::middleware([AuthMiddleware::class])->prefix('/v1/board')->group(function 
     Route::get('', [BoardController::class, 'index']);
     Route::get('/{id}', [BoardController::class, 'show']);
     Route::post('', [BoardController::class, 'create']);
+    Route::post('/{id}', [BoardController::class, 'create']);
     Route::put('/{id}', [BoardController::class, 'update']);
     Route::delete('/{id}', [BoardController::class, 'destroy']);
 });

@@ -34,9 +34,13 @@ class BoardController extends Controller
                 'name'=>$name,
                 'creator_id'=>$token->user_id
             ]);
-            return response()->json(['message'=>'create board success'],200);
+            return response()->json([
+                'message'=>'create board success'
+            ],200);
        }
-       return response()->json(['message'=>'unauthorized user'],401);
+       return response()->json([
+        'message'=>'invalid field'
+        ],401);
     }
 
     public function update(Request $request, string $id){
@@ -46,12 +50,14 @@ class BoardController extends Controller
             if($id){
                 $update->name=$request->name;
                 $update->save();
-                return response()->json(['message'=>'update board success'],200);
+                return response()->json([
+                    'message'=>'update board success'
+                ],200);
             }
-            return response()->json(['message'=>'invalid field'],422);
-
+            return response()->json([
+                'message'=>'invalid field'
+            ],422);
         }
-        return response()->json(['message'=>'unauthorized user'],401);
     }
 
     public function destroy(Request $request, string $id) {
@@ -61,17 +67,12 @@ class BoardController extends Controller
             if ($board) {
                 $board->delete();
                 return response()->json([
-                    'message' => 'Delete board success'
+                    'message' => 'delete board success'
                 ], 200);
             }
             return response()->json([
-                'message' => 'Invalid field: Board not found'
+                'message' => 'board not found'
             ], 422);
         }
-
-        return response()->json([
-            'message' => 'Unauthorized user'
-        ], 401);
     }
-
 }

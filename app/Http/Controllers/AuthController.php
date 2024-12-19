@@ -24,6 +24,12 @@ class AuthController extends Controller
             'password' => Hash::make($validated['password'])
         ]);
 
+        if (!$data) {
+            return response()->json([
+                'message' => 'invalid field'
+            ]);
+        }
+
         $token = md5($data->id);
         $ket = LoginToken::create([
             'user_id' => $data->id,
@@ -31,7 +37,6 @@ class AuthController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'berhasil ditambah',
             'data' => $ket
         ], 200);
     }
@@ -51,20 +56,20 @@ public function login(Request $request) {
         if ($loginToken) {
             $loginToken->update(['token' => $token]);
         } else {
-            LoginToken::create([
+            $token = LoginToken::create([
                 'user_id' => $user->id,
-                'token' => $token
+                'token' => $loginToken
             ]);
         }
 
         return response()->json([
-            'message' => 'Berhasil login',
             'token' => $token
         ], 200);
+
     }
 
     return response()->json([
-        'message' => 'Login gagal'
+        'message' => 'invalid login'
     ], 401);
 }
 
@@ -80,7 +85,7 @@ public function login(Request $request) {
         }
 
         return response()->json([
-            'message' => 'logout gagal'
+            'message' => 'unauthorized user'
         ], 401);
     }
 }
